@@ -63,16 +63,39 @@ namespace Lyft
                 else
                 {
                     var list = store[key];
-                    for (int i = 0; i < list.Count; i++)
-                    {
-                        if(list[i].Version > version && i > 0)
-                        {
-                            return list[i - 1].Value;
-                        }
-                    }
+                    var versionedValue = BinarySearchIterative(list, version);
+                    if (versionedValue == null)
+                        return null;
+                    return versionedValue.Value;
+                }
+            }
+            return null;
+        }
 
-                    int len = store[key].Count;
-                    return store[key][len - 1].Value;
+        public VersionedValue BinarySearchIterative(List<VersionedValue> inputArray, int version)
+        {
+            int min = 0;
+            int max = inputArray.Count - 1;
+            while (min <= max)
+            {
+                if(max - min == 1)
+                {
+                    if (inputArray[max].Version <= version)
+                        return inputArray[max];
+                    return inputArray[min];
+                }
+                int mid = (min + max) / 2;
+                if (version == inputArray[mid].Version)
+                {
+                    return inputArray[mid];
+                }
+                else if (version < inputArray[mid].Version)
+                {
+                    max = mid - 1;
+                }
+                else
+                {
+                    min = mid + 1;
                 }
             }
             return null;
